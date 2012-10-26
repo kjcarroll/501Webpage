@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT comicRoot (entry+)>
+<!ELEMENT entry (title, number, imageLink, transcript, date)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT number (#PCDATA)>
+<!ELEMENT imageLink (#PCDATA)>
+<!ELEMENT transcript (#PCDATA)>
+<!ELEMENT date (#PCDATA)>
