@@ -5,7 +5,7 @@
 
 #Be sure we get the info we need, and not other junk
 if [ -z $1 ]; then echo "Reqires the name of your XML file as an argument" && exit 1; fi
-if [ -n $2 ]; then echo "Only one argument allowed" && exit 1; fi
+if [[ $2 != "" ]]; then echo "Only one argument allowed" && exit 1; fi
 
 #DANGER
 if [ -a $1 ]; then echo "It looks like $1 already exists. Manually move or rename it to recreate a database under that name" && exit 1; fi
