@@ -20,14 +20,24 @@ for ((i=1;i<=$MAXNUM;i++))
         LINK=`echo $JSON | jsawk 'return this.img'`
         TRANSCRIPT=`echo $JSON | jsawk 'return this.transcript'`
         DATE=`echo $JSON | jsawk 'return this.month + "/" + this.day + "/" + this.year'`
-        #Scrub transcripts and titles for <,>, and &
+        #Split the transcript into real transcript and alt-text
+        TRANSSPLIT=`echo $TRANSCRIPT | awk 'BEGIN { FS = "{{" } ; { print $1 }'`
+        #Shy of ideal, grabs whatever they CALLED the alt text too
+        ALTSPLIT=`echo $TRANSCRIPT | sed -e 's,.*{{\([^{{]*\)}}.*,\1,g'`
+        #Scrub transcripts, alt text, and titles for <,>, and &
         #THIS IS STILL VERY SLOPPY
-        TRANSCRIPT=`echo $TRANSCRIPT | sed 's/</\&lt;/g'`
-        TRANSCRIPT=`echo $TRANSCRIPT | sed 's/>/\&gt;/g'`
-        TRANSCRIPT=`echo $TRANSCRIPT | sed 's/&/\&amp;/g'`
+
+        TRANSSPLIT=`echo $TRANSSPLIT | sed 's/</\&lt;/g'`
+        TRANSSPLIT=`echo $TRANSSPLIT | sed 's/>/\&gt;/g'`
+        TRANSSPLIT=`echo $TRANSSPLIT | sed 's/&/\&amp;/g'`
+
+        ALTSPLIT=`echo $ALTSPLIT | sed 's/</\&lt;/g'`
+        ALTSPLIT=`echo $ALTSPLIT | sed 's/>/\&gt;/g'`
+        ALTSPLIT=`echo $ALTSPLIT | sed 's/&/\&amp;/g'`
+
         TITLE=`echo $TITLE | sed 's/</\&lt;/g'`
         TITLE=`echo $TITLE | sed 's/>/\&gt;/g'`
         TITLE=`echo $TITLE | sed 's/&/\&amp;/g'`
-        echo -e "\t<entry>\n\t\t<title>$TITLE</title>\n\t\t<number>$NUMBER</number>\n\t\t<imageLink>$LINK</imageLink>\n\t\t<transcript>$TRANSCRIPT</transcript>\n\t\t<date>$DATE</date>\n\t</entry>" >> $1
+        echo -e "\t<entry>\n\t\t<title>$TITLE</title>\n\t\t<number>$NUMBER</number>\n\t\t<imageLink>$LINK</imageLink>\n\t\t<transcript>$TRANSSPLIT</transcript>\n\t\t<alttext>$ALTSPLIT</alttext>\n\t\t<date>$DATE</date>\n\t</entry>" >> $1
     done
 echo -e "</comicRoot>" >> $1

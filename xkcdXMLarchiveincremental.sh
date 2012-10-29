@@ -18,22 +18,33 @@ STARTNUM="`echo "$CURNUM+1" | bc`"
 #Grab the entries we don't already have and put them in the XML file
 
 for ((i=$STARTNUM;i<=$MAXNUM;i++))
-    do
-        JSON="`wget -qO- http://xkcd.com/$i/info.0.json`"
-        TITLE=`echo $JSON | jsawk 'return this.safe_title'`
-        NUMBER=`echo $JSON | jsawk 'return this.num'`
-        LINK=`echo $JSON | jsawk 'return this.img'`
-        TRANSCRIPT=`echo $JSON | jsawk 'return this.transcript'`
-        DATE=`echo $JSON | jsawk 'return this.month + "/" + this.day + "/" + this.year'`
-        #Scrub transcripts and titles for <,>, and &
-        #THIS IS STILL VERY SLOPPY
-        TRANSCRIPT=`echo $TRANSCRIPT | sed 's/</\&lt;/g'`
-        TRANSCRIPT=`echo $TRANSCRIPT | sed 's/>/\&gt;/g'`
-        TRANSCRIPT=`echo $TRANSCRIPT | sed 's/&/\&amp;/g'`
-        TITLE=`echo $TITLE | sed 's/</\&lt;/g'`
-        TITLE=`echo $TITLE | sed 's/>/\&gt;/g'`
-        TITLE=`echo $TITLE | sed 's/&/\&amp;/g'`
-        echo -e "\t<entry>\n\t\t<title>$TITLE</title>\n\t\t<number>$NUMBER</number>\n\t\t<imageLink>$LINK</imageLink>\n\t\t<transcript>$TRANSCRIPT</transcript>\n\t\t<date>$DATE</date>\n\t</entry>" >> $1
-    done
+ do
+     JSON="`wget -qO- http://xkcd.com/$i/info.0.json`"
+     TITLE=`echo $JSON | jsawk 'return this.safe_title'`
+     NUMBER=`echo $JSON | jsawk 'return this.num'`
+     LINK=`echo $JSON | jsawk 'return this.img'`
+     TRANSCRIPT=`echo $JSON | jsawk 'return this.transcript'`
+     DATE=`echo $JSON | jsawk 'return this.month + "/" + this.day + "/" + this.year'`
+     #Split the transcript into real transcript and alt-text
+     TRANSSPLIT=`echo $TRANSCRIPT | awk 'BEGIN { FS = "{{" } ; { print $1 }'`
+     #Shy of ideal, grabs whatever they CALLED the alt text too
+     ALTSPLIT=`echo $TRANSCRIPT | sed -e 's,.*{{\([^{{]*\)}}.*,\1,g'`
+     #Scrub transcripts, alt text, and titles for <,>, and &
+     #THIS IS STILL VERY SLOPPY
+
+     TRANSSPLIT=`echo $TRANSSPLIT | sed 's/</\&lt;/g'`
+     TRANSSPLIT=`echo $TRANSSPLIT | sed 's/>/\&gt;/g'`
+     TRANSSPLIT=`echo $TRANSSPLIT | sed 's/&/\&amp;/g'`
+
+     ALTSPLIT=`echo $ALTSPLIT | sed 's/</\&lt;/g'`
+     ALTSPLIT=`echo $ALTSPLIT | sed 's/>/\&gt;/g'`
+     ALTSPLIT=`echo $ALTSPLIT | sed 's/&/\&amp;/g'`
+
+     TITLE=`echo $TITLE | sed 's/</\&lt;/g'`
+     TITLE=`echo $TITLE | sed 's/>/\&gt;/g'`
+     TITLE=`echo $TITLE | sed 's/&/\&amp;/g'`
+     echo -e "\t<entry>\n\t\t<title>$TITLE</title>\n\t\t<number>$NUMBER</number>\n\t\t<imageLink>$LINK</imageLink>\n\t\t<transcript>$TRANSSPLIT</transcript>\n\t\t<alttext>$ALTSPLIT</alttext>\n\t\t<date>$DATE</date>\n\t</entry>" >> $1
+done
+
 #Reclose our root element
 echo -e "</comicRoot>" >> $1
