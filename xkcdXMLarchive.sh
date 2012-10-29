@@ -11,7 +11,7 @@ if [[ $2 != "" ]]; then echo "Only one argument allowed" && exit 1; fi
 if [ -a $1 ]; then echo "It looks like $1 already exists. Manually move or rename it to recreate a database under that name" && exit 1; fi
 
 MAXNUM="`wget -q -O - http://xkcd.com/info.0.json | jsawk 'return this.num'`"
-echo -ne "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<comicRoot>\n"
+echo -ne "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<comicRoot>\n" > $1
 for ((i=1;i<=$MAXNUM;i++))
     do
         JSON="`wget -qO- http://xkcd.com/$i/info.0.json`"
