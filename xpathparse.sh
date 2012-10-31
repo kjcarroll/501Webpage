@@ -2,21 +2,15 @@
 #Requires the perl xpath utility
 
 #Make sure none of our entries start off as null
-ENTRY=INITIALIZED
-TITLE=INITIALIED
-NUMBER=INITIALIZED
-IMAGELINK=INITIALIZED
-TRANSCRIPT=INITIALIZED
-ALTTEXT=INITIALIZED
-DATE=INITIALIZED
 count=1
+max=`xpath xkcdXMLarchive.xml /comicRoot/entry[last\(\)]/number 2>/dev/null | sed -e 's/<[^>]*>//g'`
+
 function tsearch {
 
-while [ -n "$ENTRY" ]
+while [ $count -le $max ]
 do
     echo "Parsing the title of comic $count..."
     TITLE=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/title 2>/dev/null | sed -e 's/<[^>]*>//g'`
-    ENTRY=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count] 2>/dev/null`
     #Enclose this bit in an if statement that makes sense
     if [[ -n `echo "$TITLE" | grep -i $query` ]]
     then
@@ -30,13 +24,12 @@ done
 
 function nsearch {
 
-while [ -n "$ENTRY" ]
+while [ $count -le $max ]
 do
-    echo "Parsing the title of comic $count..."
-    TITLE=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/title 2>/dev/null | sed -e 's/<[^>]*>//g'`
-    ENTRY=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count] 2>/dev/null`
+    echo "Parsing the number of comic $count..."
+    NUMBER=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/number 2>/dev/null | sed -e 's/<[^>]*>//g'`
     #Enclose this bit in an if statement that makes sense
-    if [[ -n `echo "$TITLE" | grep -i $query` ]]
+    if [[ -n `echo "$NUMBER" | grep -i $query` ]]
     then
         grabvalues
         printvalues
@@ -49,13 +42,12 @@ done
 
 function lsearch {
 
-while [ -n "$ENTRY" ]
+while [ $count -le $max ]
 do
-    echo "Parsing the title of comic $count..."
-    TITLE=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/title 2>/dev/null | sed -e 's/<[^>]*>//g'`
-    ENTRY=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count] 2>/dev/null`
+    echo "Parsing the link of comic $count..."
+    IMAGELINK=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/imageLink 2>/dev/null | sed -e 's/<[^>]*>//g'`
     #Enclose this bit in an if statement that makes sense
-    if [[ -n `echo "$TITLE" | grep -i $query` ]]
+    if [[ -n `echo "$IMAGELINK" | grep -i $query` ]]
     then
         grabvalues
         printvalues
@@ -68,13 +60,12 @@ done
 
 function ssearch {
 
-while [ -n "$ENTRY" ]
+while [ $count -le $max ]
 do
-    echo "Parsing the title of comic $count..."
-    TITLE=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/title 2>/dev/null | sed -e 's/<[^>]*>//g'`
-    ENTRY=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count] 2>/dev/null`
+    echo "Parsing the transcript of comic $count..."
+    TRANSCRIPT=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/transcript 2>/dev/null | sed -e 's/<[^>]*>//g'`
     #Enclose this bit in an if statement that makes sense
-    if [[ -n `echo "$TITLE" | grep -i $query` ]]
+    if [[ -n `echo "$TRANSCRIPT" | grep -i $query` ]]
     then
         grabvalues
         printvalues
@@ -87,13 +78,12 @@ done
 
 function asearch {
 
-while [ -n "$ENTRY" ]
+while [ $count -le $max ]
 do
-    echo "Parsing the title of comic $count..."
-    TITLE=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/title 2>/dev/null | sed -e 's/<[^>]*>//g'`
-    ENTRY=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count] 2>/dev/null`
+    echo "Parsing the alt text of comic $count..."
+    ALTTEXT=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/alttext 2>/dev/null | sed -e 's/<[^>]*>//g'`
     #Enclose this bit in an if statement that makes sense
-    if [[ -n `echo "$TITLE" | grep -i $query` ]]
+    if [[ -n `echo "$ALTTEXT" | grep -i $query` ]]
     then
         grabvalues
         printvalues
@@ -106,13 +96,12 @@ done
 
 function dsearch {
 
-while [ -n "$ENTRY" ]
+while [ $count -le $max ]
 do
-    echo "Parsing the title of comic $count..."
-    TITLE=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/title 2>/dev/null | sed -e 's/<[^>]*>//g'`
-    ENTRY=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count] 2>/dev/null`
+    echo "Parsing the date of comic $count..."
+    DATE=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/date 2>/dev/null | sed -e 's/<[^>]*>//g'`
     #Enclose this bit in an if statement that makes sense
-    if [[ -n `echo "$TITLE" | grep -i $query` ]]
+    if [[ -n `echo "$DATE" | grep -i $query` ]]
     then
         grabvalues
         printvalues
@@ -126,19 +115,12 @@ done
 function grabvalues {
     echo "Grabbing values..."
     ENTRY=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count] 2>/dev/null`
-    echo "got the entry"
     TITLE=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/title 2>/dev/null | sed -e 's/<[^>]*>//g'`
-    echo "got the title"
     NUMBER=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/number 2>/dev/null | sed -e 's/<[^>]*>//g'`
-    echo "got the number"
     IMAGELINK=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/imageLink 2>/dev/null | sed -e 's/<[^>]*>//g'`
-    echo "got the link"
     TRANSCRIPT=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/transcript 2>/dev/null | sed -e 's/<[^>]*>//g'`
-    echo "got the transcript"
     ALTTEXT=`xpath xkcdXMLarchive /comicRoot/entry[$count]/alttext 2>/dev/null | sed -e 's/<[^>]*>//g'`
-    echo "got the alt text"
     DATE=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/date 2>/dev/null | sed -e 's/<[^>]*>//g'`
-    echo "got the date"
 }
 
 function printvalues {
@@ -153,7 +135,7 @@ function printvalues {
 
 }
 
-while getopts ":t:" opt; do
+while getopts ":t:n:l:s:a:d:" opt; do
     case $opt in
       t)
           query=$OPTARG && tsearch
