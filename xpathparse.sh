@@ -112,6 +112,25 @@ done
 
 }
 
+
+function fsearch {
+
+while [ $count -le $max ]
+do
+    echo "Parsing the tags of comic $count..."
+    TAGS=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/tags 2>/dev/null | sed -e 's/<[^>]*>//g'`
+    #Enclose this bit in an if statement that makes sense
+    if [[ -n `echo "$TAGS" | grep -i $query` ]]
+    then
+        grabvalues
+        printvalues
+    fi
+    count=$((count+1))
+done
+
+
+}
+
 function grabvalues {
     echo "Grabbing values..."
     ENTRY=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count] 2>/dev/null`
@@ -121,6 +140,7 @@ function grabvalues {
     TRANSCRIPT=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/transcript 2>/dev/null | sed -e 's/<[^>]*>//g'`
     ALTTEXT=`xpath xkcdXMLarchive /comicRoot/entry[$count]/alttext 2>/dev/null | sed -e 's/<[^>]*>//g'`
     DATE=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/date 2>/dev/null | sed -e 's/<[^>]*>//g'`
+    TAGS=`xpath xkcdXMLarchive.xml /comicRoot/entry[$count]/tags 2>/dev/null | sed -e 's/<[^>]*>//g' | sed 's/^ *//g'`
 }
 
 function printvalues {
@@ -131,11 +151,12 @@ function printvalues {
         echo "Transcript: $TRANSCRIPT"
         echo "Alt Text: $ALTTEXT"
         echo "Date: $DATE"
+        echo "Tags:"
+        echo "$TAGS"
         echo ""
-
 }
 
-while getopts ":t:n:l:s:a:d:" opt; do
+while getopts ":t:n:l:s:a:d:f:" opt; do
     case $opt in
       t)
           query=$OPTARG && tsearch
@@ -159,6 +180,10 @@ while getopts ":t:n:l:s:a:d:" opt; do
       ;;
       d)
           query=$OPTARG && dsearch
+          exit 0
+      ;;
+      f)
+          query=$OPTARG && fsearch
           exit 0
       ;;
       \?)
