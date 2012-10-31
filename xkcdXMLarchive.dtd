@@ -8,3 +8,4 @@
 <!ELEMENT alttext (#PCDATA)>
 <!ELEMENT date (#PCDATA)>
 <!ELEMENT tags (tag*)>
+<!ELEMENT tag (#PCDATA)>
