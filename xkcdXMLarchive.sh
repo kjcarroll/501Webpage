@@ -38,6 +38,6 @@ for ((i=1;i<=$MAXNUM;i++))
         TITLE=`echo $TITLE | sed 's/</\&lt;/g'`
         TITLE=`echo $TITLE | sed 's/>/\&gt;/g'`
         TITLE=`echo $TITLE | sed 's/&/\&amp;/g'`
-        echo -e "\t<entry>\n\t\t<title>$TITLE</title>\n\t\t<number>$NUMBER</number>\n\t\t<imageLink>$LINK</imageLink>\n\t\t<transcript>$TRANSSPLIT</transcript>\n\t\t<alttext>$ALTSPLIT</alttext>\n\t\t<date>$DATE</date>\n\t</entry>" >> $1
+        echo -e "\t<entry>\n\t\t<title>$TITLE</title>\n\t\t<number>$NUMBER</number>\n\t\t<imageLink>$LINK</imageLink>\n\t\t<transcript>$TRANSSPLIT</transcript>\n\t\t<alttext>$ALTSPLIT</alttext>\n\t\t<date>$DATE</date>\n\t\t<tags>\n\t\t</tags>\n\t</entry>" >> $1
     done
 echo -e "</comicRoot>" >> $1
