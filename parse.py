@@ -12,6 +12,9 @@ def getMax():
     maxJSON = maxJSON["num"]
     global maxJSON
 
+def getCurrNum():
+    global currNum
+    currNum = masterList.values()[-1]['num']
 
 def buildMasterList():
     getMax()
@@ -21,12 +24,13 @@ def buildMasterList():
         url = 'http://xkcd.com/%s/info.0.json' % f
         data = urllib.urlopen(url).read()
         data = ast.literal_eval(data)
-        print "Inserting data for comic number %s" %f
+        print "Inserting data for comic number %s" % f
         global masterList
         masterList[f] = data
     f = open('data', 'w')
     masterListString = str(masterList)
     f.write(masterListString)
+    f.close()
 
 
 def printEntry(n):
@@ -71,6 +75,7 @@ def checkForMasterList():
         with open('data') as f:
             masterList = open('data', 'r').read()
             masterList = ast.literal_eval(masterList)
+            f.close()
             global masterList
             getMax()
             pass
@@ -79,3 +84,61 @@ def checkForMasterList():
 
 def printMasterList():
     print masterList
+
+def printLastEntry():
+    print masterList.values()[-1]['num']
+
+def updateMasterList():
+    getMax()
+    getCurrNum()
+    if maxJSON == currNum:
+        return
+    else:
+        for f in range(currNum+1, maxJSON+1):
+            url = 'http://xkcd.com/%s/info.0.json' % f
+            data = urllib.urlopen(url).read()
+            data = ast.literal_eval(data)
+            print "Inserting data for comic number %s" %f
+            masterList[f] = data
+        f = open('data', 'w')
+        masterListString = str(masterList)
+        f.write(masterListString)
+        f.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
