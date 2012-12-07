@@ -24,6 +24,7 @@ for ((i=$STARTNUM;i<=$MAXNUM;i++))
      TITLE=`echo $JSON | jsawk 'return this.safe_title'`
      NUMBER=`echo $JSON | jsawk 'return this.num'`
      LINK=`echo $JSON | jsawk 'return this.img'`
+     wget $LINK -O /backup/directory/for/images/here/`date +%m%d%g`.png
      TRANSCRIPT=`echo $JSON | jsawk 'return this.transcript'`
      DATE=`echo $JSON | jsawk 'return this.month + "/" + this.day + "/" + this.year'`
      #Split the transcript into real transcript and alt-text
