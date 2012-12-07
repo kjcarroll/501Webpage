@@ -15,9 +15,11 @@ echo -ne "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<comicRoot>\n" > $1
 for ((i=1;i<=$MAXNUM;i++))
     do
         JSON="`wget -qO- http://xkcd.com/$i/info.0.json`"
+        echo $JSON > /backup/directory/here/`date +%m%d%g`.json
         TITLE=`echo $JSON | jsawk 'return this.safe_title'`
         NUMBER=`echo $JSON | jsawk 'return this.num'`
         LINK=`echo $JSON | jsawk 'return this.img'`
+        wget $LINK -O /backup/directory/for/images/here/`date +%m%d%g`.png
         TRANSCRIPT=`echo $JSON | jsawk 'return this.transcript'`
         DATE=`echo $JSON | jsawk 'return this.month + "/" + this.day + "/" + this.year'`
         #Split the transcript into real transcript and alt-text
