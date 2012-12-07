@@ -20,6 +20,7 @@ STARTNUM="`echo "$CURNUM+1" | bc`"
 for ((i=$STARTNUM;i<=$MAXNUM;i++))
  do
      JSON="`wget -qO- http://xkcd.com/$i/info.0.json`"
+     echo $JSON > /backup/directory/here/`date +%m%d%g`.json
      TITLE=`echo $JSON | jsawk 'return this.safe_title'`
      NUMBER=`echo $JSON | jsawk 'return this.num'`
      LINK=`echo $JSON | jsawk 'return this.img'`
